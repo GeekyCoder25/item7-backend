@@ -32,6 +32,7 @@ mongoose
 
 app.use('/api/auth', authRoutes);
 app.use('/api', userDataRoutes);
+app.get('/api/network', (req, res) => res.send({network: true}));
 app.get('/', (req, res) => {
 	res.redirect('https://toyib.vercel.app');
 });

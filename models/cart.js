@@ -9,7 +9,7 @@ const CartSchema = new Schema(
 		desserts: [String],
 		drinks: [String],
 		price: Number,
-		deliveryFee: String | Number,
+		deliveryFee: Number,
 		numberOfItem: Number,
 		image: [String],
 	},
