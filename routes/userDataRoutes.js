@@ -5,7 +5,11 @@ const {
 	putUserData,
 	putCart,
 	deleteCart,
-    postCart,
+	postCart,
+	postFavorite,
+	getFavorite,
+	getRecents,
+	postRecents,
 } = require('../controllers/userDataController');
 
 const router = express.Router();
@@ -16,4 +20,8 @@ router.put('/userData/:id', putUserData);
 router.post('/cart/:id', postCart);
 router.put('/cart/:id', putCart);
 router.delete('/cart/:id/:_id', deleteCart);
+router.get('/favorites/:id/', getFavorite);
+router.post('/favorites/:id', postFavorite);
+router.get('/recents/:id/', getRecents);
+router.post('/recents/:id', postRecents);
 module.exports = router;

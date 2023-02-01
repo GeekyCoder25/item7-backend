@@ -1,19 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const {isMobilePhone} = require('validator');
-const CartSchema = new Schema(
-	{
-		title: String,
-		titlePlural: String,
-		additionals: [String],
-		desserts: [String],
-		drinks: [String],
-		price: Number,
-		deliveryFee: String | Number,
-		numberOfItem: Number,
-	}
-	// {timestamps: true}
-);
+const CartSchema = new Schema({
+	title: String,
+	titlePlural: String,
+	additionals: [String | Number],
+	desserts: [String],
+	drinks: [String],
+	price: Number,
+	deliveryFee: {type: Number, required: [true, 'Server Error, Try again']},
+	numberOfItem: Number,
+});
 const UserDataSchema = new Schema(
 	{
 		phoneNumber: {
@@ -23,10 +20,15 @@ const UserDataSchema = new Schema(
 			validate: [isMobilePhone, 'Invalid phone number'],
 		},
 		cart: [CartSchema],
-		// favorites: [cart],
-		// recents: [cart],
+		favorites: [String],
+		recents: [String],
+		orders: [String],
+		userInfo: [String],
+		notifications: {
+			no: Number,
+			messages: [String],
+		},
 	},
 	{timestamps: true}
 );
-
 module.exports = mongoose.model('userData', UserDataSchema);

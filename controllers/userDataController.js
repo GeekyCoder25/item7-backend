@@ -1,9 +1,6 @@
-const {v4: uuidv4} = require('uuid');
-const {Mongoose} = require('mongoose');
 const UserDataModel = require('../models/userDataModel');
 
 exports.getUserData = (req, res) => {
-	// res.send(req.params.id);
 	UserDataModel.findOne({phoneNumber: req.params.id}).then(result => {
 		console.log('get', result);
 		res.status(200).json(result);
@@ -24,13 +21,32 @@ exports.postUserData = (req, res) => {
 			} else if (err.message.includes('user validation failed')) {
 				const errors = handleErrors(err);
 				res.status(400).json(Object.values(errors)[0]);
+			} else res.status(400).send(err.message);
+		});
+};
+exports.putUserData = (req, res) => {
+	UserDataModel.findOneAndUpdate({phoneNumber: req.params.id}, req.body, {
+		new: true,
+		runValidators: true,
+	})
+		.then(result => {
+			res.status(200).json(result);
+		})
+		.catch(err => {
+			console.log(err);
+			if (err.code === 11000) {
+				res
+					.status(400)
+					.json('Phone number has already been used with another account');
+			} else if (err.message.includes('user validation failed')) {
+				const errors = handleErrors(err);
+				res.status(400).json(Object.values(errors)[0]);
 			}
 		});
 };
 exports.postCart = (req, res) => {
-	UserDataModel.updateOne({cart: req.body})
+	UserDataModel.updateOne({phoneNumber: req.params.id}, {cart: req.body})
 		.then(result => {
-			console.log(result);
 			res.status(200).json(result);
 		})
 		.catch(err => {
@@ -48,7 +64,6 @@ exports.putCart = (req, res) => {
 		}
 	)
 		.then(result => {
-			console.log(req.body._id);
 			res.status(200).json(result);
 		})
 		.catch(err => {
@@ -57,7 +72,6 @@ exports.putCart = (req, res) => {
 		});
 };
 exports.deleteCart = (req, res) => {
-	console.log(req.params);
 	UserDataModel.updateOne(
 		{phoneNumber: req.params.id},
 		{$pull: {cart: {_id: req.params._id}}}
@@ -70,25 +84,49 @@ exports.deleteCart = (req, res) => {
 			return res.send(err);
 		});
 };
-exports.putUserData = (req, res) => {
-	UserDataModel.findOneAndUpdate({phoneNumber: req.params.id}, req.body, {
-		new: true,
-		runValidators: true,
-	})
+exports.getFavorite = (req, res) => {
+	UserDataModel.findOne({phoneNumber: req.params.id}).then(result => {
+		console.log(result);
+		res.status(200).json(result);
+	});
+};
+exports.postFavorite = (req, res) => {
+	UserDataModel.updateOne({phoneNumber: req.params.id}, req.body)
 		.then(result => {
 			console.log(result);
-			res.status(200).json(result);
+			if (result.nModified === 0) {
+				throw 'Network error';
+			}
+			// res.status(400).json('No internet connection');
+			else res.status(200).json(result);
 		})
 		.catch(err => {
 			console.log(err);
-			if (err.code === 11000) {
-				res
-					.status(400)
-					.json('Phone number has already been used with another account');
-			} else if (err.message.includes('user validation failed')) {
-				const errors = handleErrors(err);
-				res.status(400).json(Object.values(errors)[0]);
-			}
+			return res.status(400).send(err);
+		});
+};
+exports.getFavorite = (req, res) => {
+	UserDataModel.findOne({phoneNumber: req.params.id}).then(result => {
+		console.log(result);
+		res.status(200).json(result);
+	});
+};
+exports.getRecents = (req, res) => {
+	UserDataModel.findOne({phoneNumber: req.params.id}).then(result => {
+		console.log(result);
+		res.status(200).json(result);
+	});
+};
+exports.postRecents = (req, res) => {
+	UserDataModel.updateOne({phoneNumber: req.params.id}, req.body)
+		.then(result => {
+			if (result.nModified === 0) {
+				throw 'Network error';
+			} else res.status(200).json(result);
+		})
+		.catch(err => {
+			console.log(err);
+			return res.status(400).send(err);
 		});
 };
 const handleErrors = err => {
