@@ -23,7 +23,7 @@ const UserDataSchema = new Schema(
 		favorites: [String],
 		recents: [String],
 		orders: [String],
-		userInfo: [String],
+		userInfo: {firstName: String, lastName: String, email: String},
 		notifications: {
 			no: Number,
 			messages: [String],

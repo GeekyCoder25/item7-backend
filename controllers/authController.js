@@ -31,7 +31,7 @@ exports.createAccount = (req, res) => {
 	User.create(req.body)
 		.then(data =>
 			res.status(200).json({
-				succes: 'Account Created Successfully',
+				success: 'Account Created Successfully',
 				data: {
 					firstName: data.firstName,
 					lastName: data.lastName,
